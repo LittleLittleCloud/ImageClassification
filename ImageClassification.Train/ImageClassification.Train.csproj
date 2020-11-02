@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="assets\inputs\images\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.ML" Version="$(MicrosoftMLVersion)" />
     <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="$(MicrosoftMLVersion)" />
     <PackageReference Include="Microsoft.ML.Vision" Version="$(MicrosoftMLVersion)" />
