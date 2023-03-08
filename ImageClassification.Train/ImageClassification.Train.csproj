@@ -5,7 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>7.2</LangVersion>
     <MicrosoftMLVersion>3.0.0-preview.22621.2</MicrosoftMLVersion>
-	  <UseGpu>TRUE</UseGpu>
+	  <UseGpu>True</UseGpu>
 	  <TFVersion>2.3.1</TFVersion>
   </PropertyGroup>
 

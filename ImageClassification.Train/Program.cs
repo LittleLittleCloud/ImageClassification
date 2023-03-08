@@ -15,7 +15,7 @@ using static Microsoft.ML.Transforms.ValueToKeyMappingEstimator;
 
 namespace ImageClassification.Train
 {
-    internal class Program
+    internal static class Program
     {
         public static string cifar10Url = @"https://github.com/YoongiKim/CIFAR-10-images/archive/refs/heads/master.zip";
 
@@ -32,13 +32,19 @@ namespace ImageClassification.Train
                 client.DownloadFile(cifar10Url, cifar10zipPath);
                 ZipFile.ExtractToDirectory(cifar10zipPath, cifar10FolderPath);
             }
-            var imageInputs = Directory.GetFiles(cifar10FolderPath)
+            var rnd = new Random(seed);
+
+            var imageInputs = Directory.GetFiles(cifar10FolderPath, searchPattern: "*.*", searchOption: SearchOption.AllDirectories)
                 .Where(p => Path.GetExtension(p) == ".jpg")
                 .Select(p => new ModelInput
                 {
                     ImagePath = p,
                     Label = p.Split("\\").SkipLast(1).Last(),
-                });
+                })
+                .ToList();
+
+            imageInputs.Shuffle(rnd);
+            imageInputs = imageInputs.Take(1000).ToList();
 
             var testImages = imageInputs.Where(f => f.ImagePath.Contains("test"));
             var trainImages = imageInputs.Where(f => f.ImagePath.Contains("train"));
@@ -46,7 +52,6 @@ namespace ImageClassification.Train
             context.Log += FilterMLContextLog;
             var trainDataset = context.Data.LoadFromEnumerable(trainImages);
             var testDataset = context.Data.LoadFromEnumerable(testImages);
-
             var pipeline = context.Transforms.LoadRawImageBytes("Features", null, "ImagePath")
                             .Append(context.Transforms.Conversion.MapValueToKey("Label"))
                             .Append(context.MulticlassClassification.Trainers.ImageClassification())
@@ -64,7 +69,6 @@ namespace ImageClassification.Train
         {
             if (e.Message.StartsWith("[Source=ImageClassificationTrainer;"))
             {
-                Console.WriteLine(e.Message);
             }
         }
 
@@ -73,6 +77,19 @@ namespace ImageClassification.Train
             public string ImagePath { get; set; }
 
             public string Label { get; set; }
+        }
+
+        public static void Shuffle<T>(this IList<T> list, Random rng)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
     }
 }
