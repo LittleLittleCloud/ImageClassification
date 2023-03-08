@@ -8,7 +8,7 @@ dotnet run --project .\ImageClassification.Train\\ImageClassification.Train.cspr
 
 # To run on CPU
 
-go to .\ImageClassification.Train\ImageClassification.Train.csproj and change <UseGpu> to False
+go to .\ImageClassification.Train\ImageClassification.Train.csproj and change `UseGpu` to False
 
 # To run on Linux
 you probably need to go to .\ImageClassification.Train\Program.cs#42 and change backward slash to forward slash
